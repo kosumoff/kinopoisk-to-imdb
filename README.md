@@ -1,2 +1,2 @@
 # kinopoisk-to-imdb
-Import Kinopoisk raitings to IMDB
+Import Kinopoisk ratings to IMDB
