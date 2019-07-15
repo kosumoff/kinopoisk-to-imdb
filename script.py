@@ -1,15 +1,20 @@
 import requests, bs4
 import imdb
 import re
+import pandas as pd
 
-movies = {'Interstellar': 10, 'Titanic': 10, 'Inception': 9, 'Alita: Battle Angel': 7}
+cookie = ''  # paste cookie
 ia = imdb.IMDb()
-cookie = '' # paste cookie
+kp = pd.read_excel('movies/kinopoisk.xlsx')
 
-for key, value in movies.items():
-    info = ia.search_movie(key)
+for i in kp.index:
+    if str(kp['оригинальное название'][i]) == "nan":
+        continue
+
+    info = ia.search_movie(str(kp['оригинальное название'][i]))
     for item in info:
-        print(f"ID: {item.movieID}, Title: {key}, Raiting: {value}")
+        print(f"ID: {item.movieID}, Title: {kp['оригинальное название'][i]}, Raiting: {kp['моя оценка'][i]}")
+
         # get auth
         headers = {'cookie': cookie}
         res = requests.get('https://www.imdb.com/title/tt' + str(item.movieID) + '/', headers=headers)
@@ -21,7 +26,7 @@ for key, value in movies.items():
         headers = {'cookie': cookie, 'referer': 'https://www.imdb.com/title/tt' + str(item.movieID) + '/'}
         data = {
             'tconst': 'tt' + str(item.movieID),
-            'rating': str(value),
+            'rating': str(kp['моя оценка'][i]),
             'auth': auth,
             'tracking_tag': 'title-maindetails',
             'pageId': 'tt' + str(item.movieID),
